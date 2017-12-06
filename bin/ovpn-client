@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+if [[ -z "$1" ]]; then
+    echo "No client name set. Usage ovpn-client clientname";
+else
+    cd /etc/openvpn
+    source /etc/openvpn/server/vars
+    export KEY_NAME="$1"
+    /etc/openvpn/easy-rsa/pkitool $1
+    echo "
+$(cat /etc/openvpn/client/default.cnf | sed "s/FQDN/${FQDN}/")
+
+<key>
+$(cat /etc/openvpn/pki/${1}.key)
+</key>
+
+<cert>
+$(openssl x509 -in /etc/openvpn/pki/${1}.crt)
+</cert>
+
+<ca>
+$(cat /etc/openvpn/pki/ca.crt)
+</ca>
+
+<tls-auth>
+$(cat /etc/openvpn/pki/tls.key)
+</tls-auth>
+key-direction 1
+    " > "/etc/openvpn/client/${1}.ovpn"
+fi

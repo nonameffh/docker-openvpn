@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+cd /etc/openvpn
+
+rm -rf /etc/openvpn/easy-rsa/* && cp -rf /usr/share/easy-rsa/2.0/* /etc/openvpn/easy-rsa
+
+source /etc/openvpn/server/vars
+/etc/openvpn/easy-rsa/clean-all
+
+openssl dhparam -out /etc/openvpn/pki/dh2048.pem 2048
+openvpn --genkey --secret /etc/openvpn/pki/tls.key
+/etc/openvpn/easy-rsa/pkitool --initca
+/etc/openvpn/easy-rsa/pkitool --server
