@@ -5,6 +5,5 @@ nobind
 dev tun
 remote-cert-tls server
 cipher AES-256-GCM
-tun-mtu 1300
 
 remote FQDN 1194 udp
